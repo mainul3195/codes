@@ -49,6 +49,39 @@ void make_path(int l = 0, int r = n - 1)
     }
     return;
 }
+void make_zero(int l, int r)
+{
+    int start = -1, end;
+    for (int i = l; i <= r; i++)
+    {
+        if (v[i])
+        {
+            if (start == -1)
+                start = i, end = i;
+            else
+                end = i;
+        }
+        else
+        {
+            if (start != -1)
+                operations.push_back({start, end});
+            start = -1;
+        }
+    }
+    if (start != -1)
+        operations.push_back({start, end});
+    return;
+}
+void fill(int l, int r)
+{
+    if (l == r)
+        return;
+    fill(l, r - 1);
+    operations.push_back({l, r});
+    make_zero(l, r - 1);
+    fill(l, r - 1);
+    return;
+}
 void solve()
 {
     cin >> n;
@@ -58,48 +91,11 @@ void solve()
         cin >> i;
     int ans = okdone();
     make_path();
-    // cout << "range:\n";
-    // for (auto [a, b] : range)
-    //     cout << a << " " << b << "\n";
-    // cout << "\n";
-    janina.push_back(1);
-    janina.push_back(0);
-    for (int i = 2; i <= 18; i++)
-    {
-        for (int j = 0;; j++)
-        {
-            if (janina[j] == i - 1)
-                break;
-            janina.push_back(janina[j]);
-        }
-        janina.push_back(i);
-        janina.push_back(i - 1);
-    }
+
     for (auto [a, b] : range)
     {
-        int start = -1, end;
-        for (int i = a; i <= b; i++)
-        {
-            if (v[i])
-            {
-                if (start == -1)
-                    start = i, end = i;
-                else
-                    end = i;
-            }
-            else
-            {
-                if (start != -1)
-                    operations.push_back({start, end});
-                start = -1;
-            }
-        }
-        if (start != -1)
-            operations.push_back({start, end});
-        int len = b - a + 1;
-        int lim = (1 << len) - 2;
-        for (int i = 0; i < lim; i++)
-            operations.push_back({a, a + janina[i]});
+        make_zero(a, b);
+        fill(a, b);
         operations.push_back({a, b});
     }
     cout << ans << " " << operations.size() << "\n";
