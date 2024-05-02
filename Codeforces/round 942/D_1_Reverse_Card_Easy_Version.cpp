@@ -10,10 +10,8 @@ void solve()
     {
         long long start = max(1LL, i * i - i);
         ans += (a - start) / (i * i) + 1;
-        // cout << ans << " ";
     }
     cout << ans << "\n";
-    // cout << "\n";
     return;
 }
 int32_t main()
