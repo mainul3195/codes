@@ -78,7 +78,7 @@ void fill(int l, int r)
         return;
     fill(l, r - 1);
     operations.push_back({l, r});
-    make_zero(l, r - 1);
+    operations.push_back({l, r - 1});
     fill(l, r - 1);
     return;
 }
