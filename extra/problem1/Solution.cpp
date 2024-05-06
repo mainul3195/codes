@@ -19,7 +19,7 @@ void solve()
     long long Y = yy[(yy.size() - 1) / 2];
     long long M = 0;
     for (int i = 0; i < xx.size(); i++)
-        M += abs(xx[i] - X) + abs(yy[i] - Y);
+        M += abs(xx[i]) + abs(yy[i]);
     cout << X << " " << Y << " " << M << "\n";
     return;
 }
