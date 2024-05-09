@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
         inf.readSpace();
         inf.readInt(1, 1000000000, "H");
         inf.readSpace();
-        inf.readInt(1, 1000000000, "theta");
+        inf.readInt(1, 60, "theta");
         if (i != t - 1)
             inf.readEoln();
     }
