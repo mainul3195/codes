@@ -3,15 +3,9 @@ using namespace std;
 
 void solve()
 {
-    int n;
-    cin >> n;
-    if (__builtin_popcount(n) == 1)
-        cout << "-1\n";
-    else
-    {
-        int a = (1 << (int)(log2(n + .5)));
-        cout << a << " " << n - a << "\n";
-    }
+    int a, b;
+    cin >> a >> b;
+    cout << min(a, b) << " " << max(a, b) << "\n";
     return;
 }
 int32_t main()
