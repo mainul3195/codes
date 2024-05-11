@@ -1,0 +1,17 @@
+There are two cities named Ephar and Ophar connected by a bridge. You and your $N$ friends are currently at Ephar and need to cross the bridge to go from Ephar to Ophar. As the bridge is vulnerable, you all want to cross it as soon as possible.
+
+For each of your friends $i$ ($1 \leq i \leq N$), there is a maximum running speed $s_i$. However, you have a motorcycle with a maximum speed $M$. Your motorcycle can carry at most one person with you. After reaching Ophar, you can instantly turn back to pick up another friend. The actions of picking up, dropping off, and changing the direction of your motorcycle do not take any time. Moreover, your motorcycle can instantly reach and maintain any constant speed.
+
+You are given the length of the bridge, the maximum running speeds of your friends, and the maximum speed of your motorcycle. You need to print the minimum time required for all of you to cross the bridge if you all start at the same time.
+
+\textbf{Input Format:}
+
+The first line contains two integers $N$ and $M$ ($1 \leq N \leq 10^5$, $1 \leq M \leq 10^9$), representing the number of friends and the maximum speed of your motorcycle, respectively.
+
+The second line contains $N$ integers $s_1, s_2, \ldots, s_N$ ($1 \leq s_i \leq 10^9$), representing the maximum running speeds of your friends.
+
+The third line contains an integer $L$ ($1 \leq L \leq 10^9$), representing the length of the bridge.
+
+\textbf{Output Format:}
+
+Print a single line containing the minimum time required for all of you to cross the bridge. Your answer will be considered correct if its absolute or relative error does not exceed $10^{-6}$.
