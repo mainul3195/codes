@@ -79,15 +79,28 @@ void solve()
     vector<int> val_mul(multi.size());
     for (int i = 0; i < val_mul.size(); i++)
         val_mul[i] = last[multi[i]];
-    int mx = 0;
-    for(int i = 0; )
+    for (int i = 1; i < val_mul.size(); i++)
+        val_mul[i] = max(val_mul[i], val_mul[i - 1]);
+
+    int lim = min(m, (int)sm);
+    long long ans = 0;
+    for (int i = 0; i <= lim; i++)
+    {
+        int ind = upper_bound(multi.begin(), multi.end(), i) - multi.begin() - 1;
+        int tmp = 0;
+        if (last.find(i) != last.end())
+            tmp = last[i];
+        if(ind!=-1)
+            tmp = max(tmp, val_mul[ind]);
+        ans += tmp;
+    }   
     // cout << m << " " << sm << "\n";
     if (m <= sm)
-        cout << sm * (m + 1) << "\n";
+        cout << ans << "\n";
     else
     {
         long long last = m - sm;
-        cout << sm * (sm + 1) + sm * last + (last + 1) * last / 2 << "\n";
+        cout << ans + sm * last + (last + 1) * last / 2 << "\n";
     }
     return;
 }
