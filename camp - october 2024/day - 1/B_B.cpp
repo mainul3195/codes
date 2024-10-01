@@ -8,45 +8,38 @@ bool cmp(nd &a, nd &b)
 {
     return a.val < b.val;
 }
+vector<nd> v, ans;
+int n;
+void make(int l = 0, int r = n - 1, int base = 0)
+{
+    if (l > r)
+        return;
+    if (base < v[l].val)
+    {
+        for (int i = l; i <= r; i++)
+            ans.push_back({2, v[i].ind});
+        for (int i = base + 1; i < v[l].val; i++)
+            ans.push_back({1, i});
+    }
+    if (l == r)
+        return;
+    int mid = (l + r) / 2;
+    make(mid + 1, r, v[l].val);
+    make(l, mid, v[l].val);
+    return;
+}
 void solve()
 {
-    int n;
     cin >> n;
-    vector<nd> v(n);
-    for (int i = 0; i < n; i++)
+    v = vector<nd>(n);
+    for (int i = 1; i <= n; i++)
     {
-        cin >> v[i].val;
-        v[i].ind = i;
+        cin >> v[i - 1].val;
+        v[i - 1].ind = i;
     }
     sort(v.begin(), v.end(), cmp);
-    vector<int> b(n, 0);
-    vector<nd> strt;
-    strt.push_back({v[0].val, 0});
-    for (int i = 1; i < n; i++)
-        if (v[i].val != strt.back().val)
-            strt.push_back({v[i].val, i});
-    // for (auto [a, b] : strt)
-    //     cout << a << " " << b << "\n";
-    // cout << "------------\n";
-    vector<nd> ans;
-    for (int i = 0; i < strt[0].val; i++)
-        ans.push_back({1, i});
-    for (int i = 1; i < strt.size(); i += 2)
-    {
-        int lim = n;
-        if (i + 1 < strt.size())
-        {
-            lim = strt[i + 1].ind;
-            for (int j = strt[i + 1].ind; j < n; j++)
-                ans.push_back({2, v[j].ind});
-            for (int j = strt[i - 1].val + 1; j < strt[i + 1].val; j++)
-                ans.push_back({1, j});
-        }
-        for (int j = strt[i].ind; j < lim; j++)
-            ans.push_back({2, v[j].ind});
-        for (int j = strt[i - 1].val + 1; j < strt[i].val; j++)
-            ans.push_back({1, j});
-    }
+    ans.clear();
+    make();
     cout << ans.size() << "\n";
     for (auto [a, b] : ans)
         cout << a << " " << b << "\n";
