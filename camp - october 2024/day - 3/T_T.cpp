@@ -14,25 +14,28 @@ int qr(int l, int r)
 }
 int query(int ind, int node = 1, int start = 1, int end = n)
 {
-    
+    if (start == end)
+        return sg_tree[node];
+    int mid = (start + end) / 2;
+    return max(sg_tree[node], ind <= mid ? query(ind, 2 * node, start, mid) : query(ind, 2 * node + 1, mid + 1, end));
 }
 void update(int l, int r, int val, int node = 1, int start = 1, int end = n)
 {
-    if(start>r || end<l)
+    if (start > r || end < l)
         return;
-    if(start>=l && end<=r)
+    if (start >= l && end <= r)
     {
         sg_tree[node] = max(sg_tree[node], val);
         return;
     }
-    int mid = (start+end)/2;
-    update(l, r, val, 2*node, start, mid);
-    update(l, r, val, 2*node+1, mid+1, end);
+    int mid = (start + end) / 2;
+    update(l, r, val, 2 * node, start, mid);
+    update(l, r, val, 2 * node + 1, mid + 1, end);
 }
 void solve()
 {
     cin >> n;
-    sg_tree = vector<int> (4*n, 0);
+    sg_tree = vector<int>(4 * n, 0);
     for (int i = 1; i <= n; i++)
         cin >> a[i];
     lim = log2(n + .5) + 2;
@@ -54,8 +57,7 @@ void solve()
             cur_g = gcd(cur_g, a[r]);
             if (cur_g == 1)
             {
-                ins[strt - i + 1].push_back(1);
-                dlt[n - i + 1].push_back(1);
+                update(strt - i + 1, n - i + 1, 1);
                 break;
             }
             int lft = strt, rght = n, mid, nd;
@@ -67,28 +69,31 @@ void solve()
                 else
                     rght = mid - 1;
             }
-            ins[strt - i + 1].push_back(cur_g);
-            dlt[nd - i + 1].push_back(cur_g);
+            update(strt - i + 1, nd - i + 1, cur_g);
             r = nd;
         }
     }
 
-    multiset<int> st;
     for (int i = 1; i <= n; i++)
-    {
-        for (auto x : ins[i])
-            st.insert(x);
-        auto it = st.end();
-        it--;
-        cout << *it << " ";
-        for (auto x : dlt[i])
-        {
-            auto it = st.find(x);
-            if (it != st.end())
-                st.erase(it);
-        }
-    }
+        cout << query(i) << " ";
     cout << "\n";
+
+    // multiset<int> st;
+    // for (int i = 1; i <= n; i++)
+    // {
+    //     for (auto x : ins[i])
+    //         st.insert(x);
+    //     auto it = st.end();
+    //     it--;
+    //     cout << *it << " ";
+    //     for (auto x : dlt[i])
+    //     {
+    //         auto it = st.find(x);
+    //         if (it != st.end())
+    //             st.erase(it);
+    //     }
+    // }
+    // cout << "\n";
     return;
 }
 int32_t main()
