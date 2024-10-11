@@ -1,0 +1,43 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 1e7 + 9;
+using ll = long long;
+
+int spf[N];
+vector<int> primes;
+void sieve() {
+  for(int i = 2; i < N; i++) {
+    if (spf[i] == 0) spf[i] = i, primes.push_back(i);
+    int sz = primes.size();
+    for (int j = 0; j < sz && i * primes[j] < N && primes[j] <= spf[i]; j++) {
+      spf[i * primes[j]] = primes[j];
+    }
+  }
+}
+int ans[N];
+void solve() {
+  int n; cin >> n;
+  cout << ans[n] << '\n';
+}
+
+int32_t main() {
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  sieve();
+  for (int i = 2; i < N; i++) {
+    if (spf[i] == i) {
+      if (spf[i - 2] == i - 2) {
+        ans[i] = 1;
+      }
+    }
+    ans[i] += ans[i - 1];
+  }
+  int t = 1, cs = 0;
+  cin >> t;
+  while (t--) {
+    cout << "Case #" << ++cs << ": ";
+    solve();
+  }
+  return 0;
+}
