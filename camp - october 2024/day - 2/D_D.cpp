@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 vector<pair<int, int>> v;
 int n;
 map<int, int> mp;
@@ -19,12 +20,14 @@ struct nd
     }
     nd(nd *a, nd *b)
     {
+        assert(a != NULL && b != NULL);
         xr = (a->xr) ^ (b->xr);
         left = a;
         right = b;
     }
     nd(nd *a)
     {
+        assert(a != NULL);
         xr = a->xr;
         left = a->left;
         right = a->right;
@@ -69,6 +72,7 @@ void print(nd *node, int start = 0, int end = n - 1)
     print(node->right, start, end);
     return;
 }
+
 void solve()
 {
     cin >> n;
@@ -78,7 +82,7 @@ void solve()
         int x;
         cin >> x;
         if (mp.find(x) == mp.end())
-            mp[x] = ((long long)rand() * rand()) % 1000000000;
+            mp[x] = rng() % 1000000000;
         v[i].first = x;
         v[i].second = i;
     }
