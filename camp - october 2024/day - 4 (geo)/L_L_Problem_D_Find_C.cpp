@@ -21,18 +21,21 @@ void solve()
     cin >> x1 >> y1 >> x2 >> y2 >> k;
     long long a = y2 - y1;
     long long b = x1 - x2;
-    long long c = gcd(abs(x2 - x1), abs(y2 - y1)) - x2 * y1 + x1 * y2;
+    // long long c = gcd(abs(x2 - x1), abs(y2 - y1)) - x2 * y1 + x1 * y2;
     // cout << "here -> " << a << " " << b << " " << c << "\n";
-    if (c < 0)
-        a *= -1, b *= -1, c *= -1;
+    // if (c < 0)
+    //     a *= -1, b *= -1, c *= -1;
     long long x0, y0, g;
     g = egcd(abs(a), abs(b), x0, y0);
-    x0 = (c / g) * x0;
-    y0 = (c / g) * y0;
+    // cout << a << " " << b << " " << g << "\n";
+    // x0 = (c / g) * x0;
+    // y0 = (c / g) * y0;
     if (a < 0)
         x0 = -x0;
     if (b < 0)
         y0 = -y0;
+    x0 += x1;
+    y0 += y1;
     // cout << x0 << " " << y0 << "\n";
     for (int i = 0; i < k; i++)
     {
