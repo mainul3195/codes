@@ -23,11 +23,7 @@ void solve()
 
     int lim = (n - 1) * (n - 1);
     for (int i = 0; i <= lim; i++)
-    {
         num_freq[i];
-        // cout << i << " -> " << num_freq[i] << "\n";
-    }
-    // cout << "\n";
 
     map<string, int> str_cnt;
     map<char, int> single_char;
@@ -65,17 +61,11 @@ void solve()
             int_found[0] = 1;
         }
     }
-    // for (auto [i, c] : int_to_char)
-    //     cout << i << " -> " << c << "\n";
-    // cout << "\n";
 
-    char ch = int_to_char[1];
 
     int found_count = 2;
-    int loop_count = 0;
     while (found_count < n)
     {
-        loop_count++;
         int cur_found = found_count;
         for (int i = 0; i < n; i++)
             if (int_found[i])
@@ -84,17 +74,9 @@ void solve()
                 // surute
                 if (i)
                 {
-                    // cout << ch << " ok \n";
                     map<int, int> freq_of_freq;
                     for (auto [c, f] : surute[ch])
                         freq_of_freq[f]++;
-                    // for (auto [c, f] : surute[ch])
-                    //     cout << c << " -> " << f << "\n";
-                    // if (i == 2)
-                    // {
-                    //     cout << " Here\n";
-                    //     return;
-                    // }
                     char target_char = 0;
                     int target_frequncy = -1;
                     for (auto [c, f] : surute[ch])
@@ -106,9 +88,7 @@ void solve()
                             for (auto num : frequency_occured_numbers[target_frequncy])
                                 if (num / n == i && num_freq[num] == target_frequncy)
                                 {
-                                    // cout << target_char << " here = " << target_frequncy << "\n";
                                     int target_value = num % n;
-                                    // cout << "target value -> " << target_value << "\t" << num << "\n";
                                     int_to_char[target_value] = target_char;
                                     char_to_int[target_char] = target_value;
                                     found_count++;
@@ -137,9 +117,7 @@ void solve()
                         for (auto num : frequency_occured_numbers[target_frequncy])
                             if (num % n == i && num_freq[num] == target_frequncy)
                             {
-                                // cout << target_char << " here = " << target_frequncy << "\n";
                                 int target_value = num / n;
-                                // cout << "target value -> " << target_value << "\t" << num << "\n";
                                 int_to_char[target_value] = target_char;
                                 char_to_int[target_char] = target_value;
                                 found_count++;
@@ -175,16 +153,6 @@ void solve()
             found_count++;
             int_found[target_value] = 1;
         }
-        // cout << "After loop:\n";
-        // for (auto [i, c] : int_to_char)
-        //     cout << i << " -> " << c << "\n";
-        // cout << "\n";
-        if (loop_count == 5)
-        {
-            return;
-        }
-        // if (cur_found == found_count)
-        //     assert(0);
     }
     for (auto [i, c] : int_to_char)
         cout << c;
