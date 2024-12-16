@@ -1,1 +1,0 @@
-{"name":"Local: Grid_Paths(DP)","url":"d:\\Cp Codes\\CSES\\Grid_Paths(DP).cpp","tests":[{"id":1679752793849,"input":"4\n....\n.*..\n...*\n*...","output":"3"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Cp Codes\\CSES\\Grid_Paths(DP).cpp","group":"local","local":true}

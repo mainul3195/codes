@@ -1,30 +1,21 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
+// #include <ext/pb_ds/assoc_container.hpp>
+// #include <ext/pb_ds/tree_policy.hpp>
+// using namespace __gnu_pbds;
+// #define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update>
 
 void solve()
 {
     int n;
     cin >> n;
-    vector<int>v(n);
-    int xr = 0;
-    for(auto &i: v)
-    {
-        cin >> i;
-        xr ^= i;
-    }
-    if(n%4 == 1)
-        xr ^= 1;
-    set<int> st;
-    for(auto i: v)
-        st.insert(i^xr);
-    if(st.size() == n)
-        cout << "YES\n";
-    else cout << "NO\n";
+    cout << "You have entered " << n << "\n";
     return;
 }
-int32_t main()
+int main()
 {
-    ios_base::sync_with_stdio(0); cin.tie(0);
-    solve(); 
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    solve();
     return 0;
 }
