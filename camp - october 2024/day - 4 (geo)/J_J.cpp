@@ -1,110 +1,155 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define eps 1e-12
-struct pt
+const double inf = 1e100;
+const double eps = 1e-9;
+const double PI = acos((double)-1.0);
+int sign(double x) { return (x > eps) - (x < -eps); }
+struct PT
 {
     double x, y;
+    PT() { x = 0, y = 0; }
+    PT(double x, double y) : x(x), y(y) {}
+    PT(const PT &p) : x(p.x), y(p.y) {}
+    PT operator+(const PT &a) const { return PT(x + a.x, y + a.y); }
+    PT operator-(const PT &a) const { return PT(x - a.x, y - a.y); }
+    PT operator*(const double a) const { return PT(x * a, y * a); }
+    friend PT operator*(const double &a, const PT &b) { return PT(a * b.x, a * b.y); }
+    PT operator/(const double a) const { return PT(x / a, y / a); }
+    bool operator==(PT a) const { return sign(a.x - x) == 0 && sign(a.y - y) == 0; }
+    bool operator!=(PT a) const { return !(*this == a); }
+    bool operator<(PT a) const { return sign(a.x - x) == 0 ? y < a.y : x < a.x; }
+    bool operator>(PT a) const { return sign(a.x - x) == 0 ? y > a.y : x > a.x; }
+    double norm() { return sqrt(x * x + y * y); }
+    double norm2() { return x * x + y * y; }
+    PT perp() { return PT(-y, x); }
+    double arg() { return atan2(y, x); }
+    PT truncate(double r)
+    { // returns a vector with norm r and having same direction
+        double k = norm();
+        if (!sign(k))
+            return *this;
+        r /= k;
+        return PT(x * r, y * r);
+    }
 };
-bool positive(pt a, pt b, pt c)
+inline double cross(PT a, PT b) { return a.x * b.y - a.y * b.x; }
+
+struct HP
 {
-    double val = (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
-    return (val > 0);
+    PT a, b;
+    HP() {}
+    HP(PT a, PT b) : a(a), b(b) {}
+    HP(const HP &rhs) : a(rhs.a), b(rhs.b) {}
+    int operator<(const HP &rhs) const
+    {
+        PT p = b - a;
+        PT q = rhs.b - rhs.a;
+        int fp = (p.y < 0 || (p.y == 0 && p.x < 0));
+        int fq = (q.y < 0 || (q.y == 0 && q.x < 0));
+        if (fp != fq)
+            return fp == 0;
+        if (cross(p, q))
+            return cross(p, q) > 0;
+        return cross(p, rhs.b - a) < 0;
+    }
+    PT line_line_intersection(PT a, PT b, PT c, PT d)
+    {
+        b = b - a;
+        d = c - d;
+        c = c - a;
+        return a + b * cross(c, d) / cross(b, d);
+    }
+    PT intersection(const HP &v)
+    {
+        return line_line_intersection(a, b, v.a, v.b);
+    }
+};
+int check(HP a, HP b, HP c)
+{
+    return cross(a.b - a.a, b.intersection(c) - a.a) > -eps; //-eps to include polygons of zero area (straight lines, points)
 }
-bool point_in_triangle(pt a, pt b, pt c, pt d)
+vector<PT> half_plane_intersection(vector<HP> h)
 {
-    if ((positive(a, b, d) == positive(b, c, d)) &&
-        (positive(b, c, d) == positive(c, a, d)) &&
-        (positive(c, a, d) == positive(a, b, d)))
-        return 1;
-    return 0;
+    sort(h.begin(), h.end());
+    vector<HP> tmp;
+    for (int i = 0; i < h.size(); i++)
+    {
+        if (!i || cross(h[i].b - h[i].a, h[i - 1].b - h[i - 1].a))
+        {
+            tmp.push_back(h[i]);
+        }
+    }
+    h = tmp;
+    vector<HP> q(h.size() + 10);
+    int qh = 0, qe = 0;
+    for (int i = 0; i < h.size(); i++)
+    {
+        while (qe - qh > 1 && !check(h[i], q[qe - 2], q[qe - 1]))
+            qe--;
+        while (qe - qh > 1 && !check(h[i], q[qh], q[qh + 1]))
+            qh++;
+        q[qe++] = h[i];
+    }
+    while (qe - qh > 2 && !check(q[qh], q[qe - 2], q[qe - 1]))
+        qe--;
+    while (qe - qh > 2 && !check(q[qe - 1], q[qh], q[qh + 1]))
+        qh++;
+    vector<HP> res;
+    for (int i = qh; i < qe; i++)
+        res.push_back(q[i]);
+    vector<PT> hull;
+    if (res.size() > 2)
+    {
+        for (int i = 0; i < res.size(); i++)
+        {
+            hull.push_back(res[i].intersection(res[(i + 1) % ((int)res.size())]));
+        }
+    }
+    return hull;
 }
-// // double cross()
-double dot(pt a, pt b)
+double maximum_inscribed_circle(vector<PT> p)
 {
-    return a.x * b.x + a.y * b.y;
-}
-double dist(pt a)
-{
-    // return sqrt((b.y - a.y) * (b.y - a.y) + (b.x - a.x) * (b.x - a.x));
-    return sqrt(a.x * a.x + a.y * a.y);
-}
-double angle(pt a1, pt a2, pt b1, pt b2)
-{
-    pt a, b;
-    a.x = a2.x - a1.x;
-    a.y = a2.y - a1.y;
-    b.x = b2.x - b1.x;
-    b.y = b2.y - b1.y;
-    return acos(dot(a, b) / (dist(a) * dist(b)));
-}
-double cross(pt a, pt b)
-{
-    return a.x * b.y - a.y * b.x;
-}
-bool possible(pt a1, pt a2, pt b1, pt b2, pt c1, pt c2)
-{
-    double tot = angle(a2, a1, b1, b2) + angle(b2, b1, c1, c2) + angle(c2, c1, a1, a1);
-    if (tot + eps > (2 * acos(0.0)))
+    int n = p.size();
+    if (n <= 2)
         return 0;
-    return 1;
-}
-pt intersection(pt a, pt b, pt c, pt d)
-{
-    double a1 = a.y - b.y, b1 = b.x - a.x, c1 = cross(a, b);
-    double a2 = c.y - d.y, b2 = d.x - c.x, c2 = cross(c, d);
-    double det = a1 * b2 - a2 * b1;
-    pt ans;
-    ans.x = (b1 * c2 - b2 * c1) / det + eps;
-    ans.y = (c1 * a2 - a1 * c2) / det + eps;
-    return ans;
-}
-double pdist(pt a, pt b)
-{
-    return sqrt((b.y - a.y) * (b.y - a.y) + (b.x - a.x) * (b.x - a.x));
+    double l = 0, r = 20000;
+    while (r - l > eps)
+    {
+        double mid = (l + r) * 0.5;
+        vector<HP> h;
+        const int L = 1e9;
+        h.push_back(HP(PT(-L, -L), PT(L, -L)));
+        h.push_back(HP(PT(L, -L), PT(L, L)));
+        h.push_back(HP(PT(L, L), PT(-L, L)));
+        h.push_back(HP(PT(-L, L), PT(-L, -L)));
+        for (int i = 0; i < n; i++)
+        {
+            PT z = (p[(i + 1) % n] - p[i]).perp();
+            z = z.truncate(mid);
+            PT y = p[i] + z, q = p[(i + 1) % n] + z;
+            h.push_back(HP(p[i] + z, p[(i + 1) % n] + z));
+        }
+        vector<PT> nw = half_plane_intersection(h);
+        if (!nw.empty())
+            l = mid;
+        else
+            r = mid;
+    }
+    return l;
 }
 void solve()
 {
     int n;
     while (cin >> n && n)
     {
-        vector<pt> v(n);
-        for (auto &[x, y] : v)
-            cin >> x >> y;
-        v.push_back(v[0]);
-        double ans = 0;
+        vector<PT> p(n);
         for (int i = 0; i < n; i++)
-            for (int j = i + 1; j < n; j++)
-                for (int k = j + 1; k < n; k++)
-                    if (possible(v[i], v[i + 1], v[j], v[j + 1], v[k], v[k + 1]))
-                    {
-                        pt a = intersection(v[i], v[i + 1], v[j], v[j + 1]);
-                        pt b = intersection(v[j], v[j + 1], v[k], v[k + 1]);
-                        pt c = intersection(v[i], v[i + 1], v[k], v[k + 1]);
-                        // cout << a.x << " " << a.y << " " << b.x << " " << b.y << " " << c.x << " " << c.y << "\n";
-                        double d1 = pdist(a, b);
-                        double d2 = pdist(b, c);
-                        double d3 = pdist(c, a);
-                        double s = (d1 + d2 + d3) / 2;
-                        // cout << d1 << " " << d1 << " " << d3 << " " << s << "\n";
-                        double r = pdist(a, b) * pdist(b, c) * sin(angle(b, a, b, c)) / (2 * s);
-                        // cout << r << "\n";
-                        ans = max(ans, r);
-                    }
-        cout << ans << "\n";
+            cin >> p[i].x >> p[i].y;
+        cout << fixed << setprecision(10) << maximum_inscribed_circle(p) << "\n";
     }
-    // pt a, b;
-    // a.x = 0, a.y = 0;
-    // b.x = b.y = 1;
-    // pt ab, ba;
-    // ab.x = b.x - a.x;
-    // ab.y = b.y - a.y;
-    // ba.x = a.x - b.x;
-    // ba.y = a.y - b.y;
-    // cout << dist(a, b) << "\n";
-    // cout << acos(dot(ab, ba) / (dist(a, b) * dist(b, a))) << "\n";
     return;
 }
-int main()
+int32_t main()
 {
     ios_base::sync_with_stdio(0);
     cin.tie(0);

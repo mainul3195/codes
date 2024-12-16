@@ -1,92 +1,63 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
-#define sz 2000006
 int n, m;
-long long bit[sz];
-long long qr(long long x)
+vector<int> val, ans;
+vector<vector<int>> adj;
+void dfs(int u, set<int> &st)
 {
-    long long ans = 0;
-    for(;x>0;x-=(x&(-x)))
-        ans+=bit[x];
-    return ans;
-}
-void upd(long long x, long long val)
-{
-    for(;x<=1000005;x+=(x&(-x)))
-    bit[x]+=val;
-}
-vector<int> adj[50004];
-vector<int>val;
-int ans = (1LL<<31)-1;
-void update(int v)
-{
-    int l = 1, r = v-1, mid, pos1 = 1;
-    while(l<=r)
+    if (val[u] != 2147483647)
     {
-        mid = (l+r)/2;
-        if(qr(v)-qr(mid))
-        {
-            pos1 = mid+1;
-            l = mid+1;
-        }
-        else r = mid-1;
+        st.insert(val[u]);
+        return;
     }
-    l = v+1, r = 1000005;
-    int pos2 = 1000006;
-    while(l<=r)
+    for (auto v : adj[u])
     {
-        mid = (l+r)/2;
-        if(qr(mid)-qr(v-1))
+        set<int> childSt;
+        dfs(v, childSt);
+        ans[u] = min(ans[u], ans[v]);
+        if (childSt.size() > st.size())
+            swap(st, childSt);
+        for (auto el : childSt)
         {
-            pos2 = mid;
-            r = mid-1;
+            auto it = st.lower_bound(el);
+            if (it != st.end())
+                ans[u] = min(ans[u], *it - el);
+            if (it != st.begin())
+            {
+                it--;
+                ans[u] = min(ans[u], el - *it);
+            }
         }
-        else l = mid+1;
+        for (auto el : childSt)
+            st.insert(el);
     }
-    if(pos1!=1)
-        ans = min(ans, v-pos1);
-    if(pos2!=1000006)
-        ans = min(ans, pos2-v);
-    upd(v, 1);
-    return;
-}
-int opt[1000000];
-void dfs(int u= 1)
-{
-    for(auto v: adj[u])
-        if(adj[v].size())
-            dfs(v);
-    for(auto v: adj[u])
-        if(adj[v].size() == 0)
-            update(val[v]+1000003);
-    opt[u] = ans;
     return;
 }
 void solve()
 {
     cin >> n >> m;
-    val = vector<int> (n+1, 0);
-    for(int i = 2; i<=n; i++)
+    ans = val = vector<int>(n + 1, 2147483647);
+    adj = vector<vector<int>>(n + 1);
+    for (int i = 2; i <= n; i++)
     {
         int p;
         cin >> p;
         adj[p].push_back(i);
     }
-    for(int i = n-m+1; i<=n; i++)
-    {
-        int v;
-        cin >> v;
-        val[i] = v;
-    }
-    dfs();
-    for(int i = 1; i<n-m+1; i++)
-        cout << opt[i] << " ";
-        cout << "\n";
+    for (int i = n - m + 1; i <= n; i++)
+        cin >> val[i];
+    set<int> st;
+    dfs(1, st);
+    for (int i = 1; i <= n - m; i++)
+        cout << ans[i] << " ";
+    cout << "\n";
+
     return;
 }
 int32_t main()
 {
-    ios_base::sync_with_stdio(0); cin.tie(0);
-    solve(); 
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    solve();
     return 0;
 }
