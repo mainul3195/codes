@@ -1,22 +1,11 @@
-#include <bits/stdc++.h>
-using namespace std;
-
-void solve()
+#include <stdio.h>
+#include <string.h>
+int main()
 {
-    int n = 100000000;
-    set<int> st;
-    for (int i = 1; i <= n; i++)
-    {
-        st.insert(n / i);
-        // cout << i << " -> " << n / i << "\n";
-    }
-    cout << st.size() << "\n";
-    return;
-}
-int32_t main()
-{
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    solve();
+    char str[100];
+    scanf("%s" ,str);
+    if(str[0]>='a' && str[0]<='z')
+        str[0]-=32;
+    printf("%s\n", str);
     return 0;
 }
