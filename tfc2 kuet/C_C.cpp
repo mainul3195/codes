@@ -34,13 +34,14 @@ void solve()
     for (int i = mid + 1; i <= n; i++)
         mn2 = min(mn2, v[mid][i]);
     ans = min(ans, mn1 + mn2);
+
     // tin ta
     long long mn = max_val;
     for (int i = 1; i < mid; i++)
         mn = min(mn, v[i][mid]);
     ans = min({ans, mn + find_min(mid, n, 1, mid - 1) + find_min(mid, n, mid + 1, n)});
     mn = max_val;
-    for (int i = mid + 1; i < n; i++)
+    for (int i = mid + 1; i <= n; i++)
         mn = min(mn, v[i][mid]);
     ans = min({ans, mn + find_min(1, mid, 1, mid - 1) + find_min(1, mid, mid + 1, n)});
 
@@ -49,7 +50,7 @@ void solve()
         mn = min(mn, v[mid][i]);
     ans = min({ans, mn + find_min(1, mid - 1, mid, n) + find_min(mid + 1, n, mid, n)});
     mn = max_val;
-    for (int i = mid + 1; i < n; i++)
+    for (int i = mid + 1; i <= n; i++)
         mn = min(mn, v[mid][i]);
     ans = min({ans, mn + find_min(1, mid - 1, 1, mid) + find_min(mid + 1, n, 1, mid)});
 
