@@ -1,0 +1,1 @@
+{"name":"Local: try","url":"d:\\Cp\\codes\\codeninza\\weekly contest 160\\try.cpp","tests":[{"id":1736435228941,"input":"2\n4\n10 14 15 11\n14 14 15 15\n3\n2 4 1\n4 4 1\n\n\n","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Cp\\codes\\codeninza\\weekly contest 160\\try.cpp","group":"local","local":true}
