@@ -91,7 +91,7 @@ struct Mat
     inline bool operator==(const Mat &b) { return a == b.a; }
     inline bool operator!=(const Mat &b) { return a != b.a; }
 };
-vector<int> a;
+int a[100005];
 int n, q;
 vector<vector<int>> base = {
                         {1, 1},
@@ -99,10 +99,9 @@ vector<vector<int>> base = {
                     Zero = {{0, 0}, {0, 0}}, iden = {{1, 0}, {0, 1}};
 struct nd
 {
-    Mat a, lm = Mat(iden);
+    Mat a, lazy_m = Mat(iden);
     bool lazy = 0;
-};
-vector<nd> seg;
+} seg[400005];
 void build(int node = 1, int start = 1, int end = n)
 {
     if (start == end)
@@ -118,19 +117,19 @@ void build(int node = 1, int start = 1, int end = n)
 }
 void pushDown(int node, int start, int end)
 {
-    seg[node].a *= seg[node].lm;
+    seg[node].a *= seg[node].lazy_m;
     if (start != end)
     {
         seg[2 * node].lazy |= seg[node].lazy;
         seg[2 * node + 1].lazy |= seg[node].lazy;
-        seg[2 * node].lm *= seg[node].lm;
-        seg[2 * node + 1].lm *= seg[node].lm;
+        seg[2 * node].lazy_m *= seg[node].lazy_m;
+        seg[2 * node + 1].lazy_m *= seg[node].lazy_m;
     }
     seg[node].lazy = 0;
-    seg[node].lm = Mat(iden);
+    seg[node].lazy_m = Mat(iden);
     return;
 }
-void update(int l, int r, int val, int node = 1, int start = 1, int end = n)
+void update(int l, int r, Mat ml, int node = 1, int start = 1, int end = n)
 {
     if (seg[node].lazy)
         pushDown(node, start, end);
@@ -139,34 +138,32 @@ void update(int l, int r, int val, int node = 1, int start = 1, int end = n)
     if (start >= l && end <= r)
     {
         seg[node].lazy = 1;
-        seg[node].lm = Mat(base).pow(val);
+        seg[node].lazy_m = ml;
         pushDown(node, start, end);
         return;
     }
     int mid = (start + end) / 2;
-    update(l, r, val, 2 * node, start, mid);
-    update(l, r, val, 2 * node + 1, mid + 1, end);
+    update(l, r, ml, 2 * node, start, mid);
+    update(l, r, ml, 2 * node + 1, mid + 1, end);
     seg[node].a = seg[2 * node].a + seg[2 * node + 1].a;
     return;
 }
-Mat query(int l, int r, int node = 1, int start = 1, int end = n)
+int query(int l, int r, int node = 1, int start = 1, int end = n)
 {
     if (seg[node].lazy)
         pushDown(node, start, end);
     if (start > r || end < l)
-        return Mat(Zero);
+        return 0;
     if (start >= l && end <= r)
-        return seg[node].a;
+        return seg[node].a.a[1][0];
     int mid = (start + end) / 2;
-    return query(l, r, 2 * node, start, mid) + query(l, r, 2 * node + 1, mid + 1, end);
+    return (query(l, r, 2 * node, start, mid) + query(l, r, 2 * node + 1, mid + 1, end)) % mod;
 }
 void solve()
 {
     cin >> n >> q;
-    a = vector<int>(n + 1);
     for (int i = 1; i <= n; i++)
         cin >> a[i];
-    seg = vector<nd>(4 * n);
     build();
     while (q--)
     {
@@ -176,13 +173,13 @@ void solve()
         {
             int l, r, x;
             cin >> l >> r >> x;
-            update(l, r, x);
+            update(l, r, Mat(base).pow(x));
         }
         else
         {
             int l, r;
             cin >> l >> r;
-            cout << query(l, r).a[1][0] << "\n";
+            cout << query(l, r) << "\n";
         }
     }
     return;
