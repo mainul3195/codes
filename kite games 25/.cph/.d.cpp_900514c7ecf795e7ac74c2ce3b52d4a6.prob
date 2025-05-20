@@ -1,0 +1,1 @@
+{"name":"Local: d","url":"d:\\Cp\\codes\\kite games 25\\d.cpp","tests":[{"id":1747309068221,"input":"1\n3\n3 2 1","output":""},{"id":1747309554457,"input":"1\n6\n6 3 2 1 4 5","output":""},{"id":1747309628054,"input":"1\n5\n4 3 5 1 2","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Cp\\codes\\kite games 25\\d.cpp","group":"local","local":true}
