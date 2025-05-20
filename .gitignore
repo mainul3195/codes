@@ -1,0 +1,18 @@
+# Binary files
+*.bin
+*.exe
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build and dependency directories
+node_modules/
+dist/
+build/ 
